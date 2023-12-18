@@ -1,0 +1,55 @@
+
+Cisco 8201 replacement
+
+- Rack new device
+- Update SN and MAC on SERF
+- Remove NIC info
+- Ensure ZTP is enabled - https://fb.workplace.com/groups/ciscobbe/permalink/1224537784871168/
+    - Set username: ipbb
+    - Set pass: cisco123
+    - # ztp enable
+    - # ztp initiate management
+    - Use this method below if vm was run and credentials were added but uplink step is the conflict
+        - Wipe config
+        - (#ztp clean)
+            - If vm already has credentials use 
+            -  vending_machine_ztpv2
+            - [ralphramos@173280.od ~]$ secrets_tool get_group NETENG_AUTOMATION | grep ^VENDING_MACHINE_ZTPV2
+    - # exit
+- Verify all uplink ports between server nodes and msw interfaces are restored
+    - With onsite tech verify the server information by checking the serial number on the host/node
+        - From there you can check serf for the hostname name and MAC address
+    - You can also check the serial number pull tag on the server itself
+
+Reason VM failed was because 3 MAC addresses were missing (3 servers were down)
+P775458043
+
+
+https://www.internalfb.com/intern/wiki/NetInfra/BBE/IP/Teams/BPD/Provisioning/VM_Step_Runbook/update_uplink_ip_serf/
+
+
+nwt16987406
+
+msw1cw.50.dfw6 rebooting continuously
+
+added MAC
+#show diag details
+
+
+Device was still failing step 
+
+[upgrade_device_os_iosxr_via_mgmt_vrf#10] executor[tsp_prn/netpe/vending_machine_executor.vip/4]: attempt failed COMMAND_RUN_FAILED failed to run show version on msw1cw.50.dfw6
+
+-> BBP Support found management interface was shutdown. Enabled and VM job back running 
+
+https://fb.workplace.com/groups/bbprovisioning/permalink/1306780586628644/
+
+
+
+msw1bh.50.ord5 - nwt16949744
+https://www.internalfb.com/vm/job/12742189
+
+Vm job failing due to console pw
+break prompt by entering invalid characters
+
+P864904025
