@@ -1,0 +1,75 @@
+show arp for juniper
+
+ralphramos@oobsw09.ord5> show ethernet-switching table
+
+
+oobca01.bog2: ge-0/0/32 <-> obosr01.bog2: ge-0/0/0
+MAC: e4:5d:37:e1:71:c0
+Local on oobca01
+                        10.255.217.33/32 [InterfaceAddress] oobca01.bog2:ae6
+                   2620:0:1cfd:11::121/128 [InterfaceAddress] oobca01.bog2:ae6
+            2620:0:1cfd:5000::/52 [DCNParent] OOBCA Pool
+Oobsr01.bog2 info: 
+ralphramos@oobsr01.bog2> show interfaces ge-0/0/0 terse
+Interface               Admin Link Proto    Local                 Remote
+ge-0/0/0                up    up
+ge-0/0/0.0              up    up   aenet    --> ae6.0
+ralphramos@oobsr01.bog2> show interfaces ae6 terse
+Interface               Admin Link Proto    Local                 Remote
+ae6                     up    up
+ae6.0                   up    up   inet     10.255.217.32/31
+                                   inet6    2620:0:1cfd:11::120/127
+                                            fe80::f24b:3aff:fe04:48c0/64
+ge-0/0/0        up    up   ge-0-0-32.oobca01.bog2:T=sa:U=facebook:B=ae6
+ralphramos@oobsr01.bog2> show chassis mac-addresses
+MAC address information:
+  Public base address      f0:4b:3a:04:48:00
+  Public count             192
+  --> Private base address     f0:4b:3a:04:48:c0
+  Private count            64
+
+
+Will show transceiver optic sfp  type on Junos
+
+tawandamaseva@oobas01.qro1# run show chassis pic pic-slot 0 fpc-slot 0
+9
+
+FPC slot 0, PIC slot 0 information:
+  Type                             36X40G
+  State                            Online
+  PIC version                 2.43
+  Uptime			 9 days, 19 hours, 54 minutes, 39 seconds
+
+PIC port information:
+                         Fiber                    Xcvr vendor       Wave-    Xcvr         JNPR
+  Port Cable type        type  Xcvr vendor        part number       length   Firmware     Rev
+  0    unknown cable     n/a   AOI                AQOMLBQ4EDMA0882  1310 nm  0.0
+  1    unknown cable     n/a   AOI                AQOMLBQ4EDMA0882  1310 nm  0.0
+  2    unknown cable     n/a   AOI                AQOMLBQ4EDMA0882  1310 nm  0.0
+  3    unknown cable     n/a   AOI                AQOMLBQ4EDMA0882  1310 nm  0.0
+  5    unknown cable     n/a   AOI                AQOMLBQ4EDMA0882  1310 nm  0.0
+
+
+ralphramos@oobca01.fml1> show chassis pic fpc-slot 0 pic-slot 0
+FPC slot 0, PIC slot 0 information:
+  Type                             32x 1G SFP, 4x 1G/10G SFP/SFP+ Builtin
+  State                            Online
+  Uptime			 127 days, 21 hours, 43 minutes, 42 seconds
+
+PIC port information:
+                         Fiber                    Xcvr vendor       Wave-    Xcvr         JNPR
+  Port Cable type        type  Xcvr vendor        part number       length   Firmware     Rev
+  0    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  1    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  2    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  3    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  4    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  5    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  6    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  7    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  8    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  9    GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  10   GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  11   GIGE 1000LX10     SM    FINISAR CORP.      FTLF1318P3BTL     1310 nm  0.0
+  12   GIGE 1000LX10     SM    AVAGO              AFCT-5715PZ-JU1   1310 nm  0.0          REV 01
+  32   GIGE 1000T        n/a   Methode Elec.      SP7041-M1-JN      n/a      0.0          REV 02
