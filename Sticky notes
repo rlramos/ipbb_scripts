@@ -1,0 +1,361 @@
+Sticky Notes:
+
+Fixmyserver 
+
+Kinit (key initiate)
+
+ vm whatif eb03.dca2
+
+vm reconfigure eb03.dca2 --task T67837412
+
+Vm configure <device name> —task <task>
+Vm restart <job id>
+Vm stop <job id> 
+
+check interface history
+
+Arista: show logging | i <interface>
+show logging last 1 day | i Ethernet3/36/1
+
+Juniper: show log messages | match <interface>
+
+
+Helpful commands to navigate FBNET. (Post on dev)
+
+“Fcm list -c | -I | -n “
+“Fdm list -n”
+ fdm list -i pr01.for1:et-1/0/22
+ fcm list -i bb01.ewr2:et-6/0/3 bb01.ewr2:et-7/0/3 eb06.ewr2:Ethernet4/10/1 ar01.ewr2:et-0/0/31 ar01.ewr2:et-0/0/29
+—> fdm list -n pr01.lhr4 -i all 
+
+“FBNET_SANDBOX 
+
+“FBNET_SANDBOX='*production*' Fcd -c “NA-CB-2237552” - provides SRLG information and vendor details”
+
+“Iptool search <ipaddress>” 
+“Fbm list —asn xxxxxxxx” fbm list --peertype ALL --asn 15419
+Fbm list —asn 32299 —peertype ALL
+ine_toolbox wtf <device name>
+“fcr --commands="show version" --device=eb0[1234].pdx1” (To run commands on multiple devices)
+fcr --commands="show settings/system_preferences/" --provisioning_states IN_USE --device="(oob|dcn)cs.*[0-9][0-9].*.ord1" | grep  "====\|state of power supply"
+	-> enter username 
+	-> enter pw
+fcr --commands "show settings/system_preferences/" --provisioning_states IN_USE --device "(oob|dcn)cs[0-9][0-9].*.pdx1" | grep  "====\|state of power supply"
+optical_tool troubleshooting capacity-down --siteA lhr6 --siteZ bos2
+
+fcm list -n "bb01.bio1|bb02.bio1" -s PRODUCTION | grep iad3
+—> To view circuits that ride along two Metros. For example circuits between BIO and IAD
+—> This command can be used to help with circuit mismatch issues with the telco carrier. Using this will confirm which circuit they are placing loops on if the one in question is not changing in activity
+—> Furthermore, if you wanted to pin point by the format of the circuit IDs use this. 
+- For example, telco carrier Jio’s circuit ids are JIOGIPLCHNSIN0076. Use SERF to see how many BB ride along this metro and then enter the grep command below:
+- fcm list -n "bb01.sin2|bb02.sin2|bb03.sin2|bbb04.sin2" | grep maa2 | egrep  'J................'
+    - b01.sin2:et-3/0/2   bb01.sin2:ae21                  bb01.maa2:et-0/0/50    bb01.maa2:ae22                    IE-CB-3494161        BB              100000  PRODUCTION              JIOGIPLCHNSIN0076
+    - bb02.sin2:et-3/0/2   bb02.sin2:ae21                  bb01.maa2:et-0/0/56    bb01.maa2:ae23                    IE-CB-3494162        BB              100000  PRODUCTION              JIOGIPLCHNSIN0075
+    - bb03.sin2:et-2/0/2   bb03.sin2:ae10                  bb02.maa2:et-0/0/46    bb02.maa2:ae0                     IE-CB-3494159        BB              100000  PRODUCTION              JIOGIPLCHNSIN0043
+Using the grep/egrep command in combination with '[A-Z].-..-[0-9].......'` can be very powerful. (IE-CB-2457896)
+
+
+[ralphramos@devvm1459.ftw0 ~] fcr --commands="show environment power" --device=msw1.*.[0-9][0-9].xsp1
+Found 72 FBNet device(s): msw1ag.01.xsp1, msw1ah.01.xsp1, msw1ai.01.xsp1, msw1aj.01.xsp1, msw1ak.01.xsp1, msw1al.01.xsp1, msw1am.01.xsp1, msw1an.01.xsp1, msw1ao.01.xsp1, msw1ap.01.xsp1, msw1aq.01.xsp1, msw1ar.01.xsp1, msw1as.01.xsp1, msw1at.01.xsp1, msw1au.01.xsp1, msw1av.01.xsp1, msw1aw.01.xsp1, msw1ax.01.xsp1, msw1aa.02.xsp1, msw1ab.02.xsp1, msw1ac.02.xsp1, msw1ad.02.xsp1, msw1ae.02.xsp1, msw1af.02.xsp1, msw1ag.02.xsp1, msw1ah.02.xsp1, msw1ai.02.xsp1, msw1aj.02.xsp1, msw1ak.02.xsp1, msw1am.02.xsp1, msw1an.02.xsp1, msw1ao.02.xsp1, msw1ap.02.xsp1, msw1aq.02.xsp1, msw1ar.02.xsp1, msw1as.02.xsp1, msw1at.02.xsp1, msw1au.02.xsp1, msw1av.02.xsp1, msw1aw.02.xsp1, msw1ax.02.xsp1, msw1al.02.xsp1, msw1aa.03.xsp1, msw1ab.03.xsp1, msw1ac.03.xsp1, msw1ad.03.xsp1, msw1ae.03.xsp1, msw1af.03.xsp1, msw1ag.03.xsp1, msw1ah.03.xsp1, msw1ai.03.xsp1, msw1aj.03.xsp1, msw1ak.03.xsp1, msw1al.03.xsp1, msw1am.03.xsp1, msw1an.03.xsp1, msw1ao.03.xsp1, msw1ap.03.xsp1, msw1aq.03.xsp1, msw1ar.03.xsp1, msw1as.03.xsp1, msw1at.03.xsp1, msw1au.03.xsp1, msw1aw.03.xsp1, msw1av.03.xsp1, msw1ax.03.xsp1, msw1aa.01.xsp1, msw1ab.01.xsp1, msw1ac.01.xsp1, msw1ad.01.xsp1, msw1ae.01.xsp1, msw1af.01.xsp1
+Enter multi-device mode. Commands go to 72 devices.
+Login [ralphramos]: ralphramos
+
+-> Template for retrieving interfaces for carrier 
+Fcm list -n “device_name.metro” -s PRODUCTION | grep <carrier_circuit_id>
+
+BB capacity
+fcm list -n .mba1 -r BB -s PRODUCTION
+
+example:
+fcm list -n "bb0[1234].jnb1" -s PRODUCTION | grep CA-MU-C101
+
+
+“Lldp audit_e2e_cabling -n <pr03.ams2> -z <asw02.ams3>” - Will display all adjacent devices according to the given A and Z devices
+
+“Drainer status <id> —tail” - Provides an active log once a drain/undrain has been initiated
+
+Cfgmon list -d pr01.fml2
+
+Cfgmon diff pr01.fml2 7599761 7599754 
+- Numbers are job ids 
+
+“Skycli -h”
+
+Skycli s -f name=~^”oobsw.*jnb1” -c derivied_platform.os_version -c name
+
+“Fishy too <bb01.sjc1> -s 4”
+
+Juniper Commands:
+
+“Sh int et-0/0/11 extensive | grep “link|last|error”
+
+mpiskunov@pr02.fra5-re0> show interfaces et-3/0/14 media detail | match CRC | refresh 10
+
+“Show configuration | display set | match <et-x-x-x>”
+
+“Show log changelog” 
+
+“Show log messages | match “OperStatus up.*x/x/x:x$”
+				   | grep “err|blo”
+			           | grep “db|except th
+
+Bouncing a Juniper interface:
+-> set {interface} disable
+-> commit
+-> delete {interface} disable
+->
+
+Arista Commands:
+
+“Show logging system | include remove” 
+show logging all | no-more | include UPDOWN
+
+eb04.den3# show interfaces ethernet 8/2/4 transceiver dom thresholds
+
+show interface transceiver dom | begin 26/1
+
+psw04.dfw5# show logging system | grep Ethernet6/16/1
+
+DO NOT USE INNOLIGHTS ON MSW AS THEY OVERHEAT
+-> The black plate is causing the SFPs to overheat
+
+msw1aw.01.iad3.facebook.com# show inventory
+
+#show module linecard
+
+# eb05.dca2# sh log | grep SSJ18415877
+
+To bounce a linecard module:
+> conf t
+# (no) power enable module linecard 9
+
+
+msw1aw.01.iad3.facebook.com# show environment temperature transceiver
+                                                         Alert  Critical
+                                       Temp    Setpoint  Limit     Limit
+Description                             (C)         (C)    (C)       (C)
+----------------------------------- ------- ----------- ------ ---------
+Xcvr25 temp sensor                     63.2   (62) 64.0     70        75
+Xcvr26 temp sensor                     64.6   (62) 64.0     70        75
+Xcvr27 temp sensor                     57.0   (67) 69.0     75        80
+Xcvr28 temp sensor                     57.4   (67) 69.0     75        80
+Xcvr29 temp sensor                     60.5   (67) 69.0     75        80
+Xcvr30 temp sensor                     59.9   (62) 64.0     70        75
+Xcvr31 temp sensor                     52.2   (67) 69.0     75        80
+Xcvr32 temp sensor                     56.3   (67) 69.0     75        80
+
+FCR command to detect wrong optics on MSW
+P131502153
+
+
+msw1av.02.ort2# sh environment temperature transceiver | exclude (7[0-9])
+Alert  Critical
+Temp    Setpoint  Limit     Limit
+Description                             (C)         (C)    (C)       (C)
+
+Xcvr25 temp sensor                     50.3   (45) 47.0     53        58
+Xcvr26 temp sensor                     53.0   (45) 47.0     53        58
+Xcvr27 temp sensor                     51.2   (45) 47.0     53        58
+Xcvr28 temp sensor                     52.9   (45) 47.0     53        58
+Xcvr29 temp sensor                     49.2   (45) 47.0     53        58
+Xcvr30 temp sensor                     54.6   (45) 47.0     53        58
+Xcvr31 temp sensor                     49.1   (45) 47.0     53        58
+Xcvr32 temp sensor                     52.8   (45) 47.0     53        58
+|
+|
+msw1av.02.ort2# sh inventory | i \s\s(2[5-9]|3[0-2])
+25   INNOLIGHT        TR-FC13T-NFB     INIBL6233794     1A
+26   INNOLIGHT        TR-FC13T-NFB     INIBL6231304     1A
+27   INNOLIGHT        TR-FC13T-NFB     INIBL6233811     1A
+28   INNOLIGHT        TR-FC13T-NFB     INIBL6233816     1A
+29   INNOLIGHT        TR-FC13T-NFB     INIBL6233818     1A
+30   INNOLIGHT        TR-FC13T-NFB     INIBL6231310     1A
+31   INNOLIGHT        TR-FC13T-NFB     INIBL6233800     1A
+32   INNOLIGHT        TR-FC13T-NFB     INIBL6233806     1A
+|
+
+
+RMA:
+
+SFP p/n: 24_000423
+24-000617 ( Cisco Innolight ) Support up to 70 DEGC
+
+Contact:
+Equinix: Level 1 Support
+Company Name: ENS C/O “POP”
+
+6+ dam on 100g ports CWDM4 
+FINISAR
+
+cmcli list-maintenance | grep 2020-01-29
+
+Verifying the MD5 hash calculation on an EOS image to confirm its integrity 
+
+bash sudo md5sum /mnt/flash/< EOS-4.21.4F.swi >
+f3d743671e825bc5b965d5fa9eaac57c&nbsp; /mnt/flash/EOS-4.21.4F.swi
+
+
+Using the find utility to locate a file in Arista:
+
+Bash sudo find / | grep EOS
+
+https://eos.arista.com/forum/no-space-left-on-device/
+
+Arista MOP in copying EOS to USB from switch:
+https://eos.arista.com/forum/how-do-i-copy-code-from-a-switch-in-prod-to-usb/
+
+
+Arista Upgrade/Downgrade EOS:
+https://www.arista.com/en/um-eos/eos-section-8-4-standard-upgrades-and-downgrades#ww1129123
+
+
+[ralphramos@devvm2376.frc2 ~] vm bypass ebb_validate_prod_device --help
+bypass will skip a step for a given job by it's name.  The skipped step allows
+the job to continue as if the step was completed.
+
+If the step is running it will be stopped and the job will continue.  If the job
+is not running or hasn't run it will be skipped and the job will continue.
+
+If --task is passed on the command line then a comment is added to an existing
+taksk about the details of the job.  If --task isn't specified a task is
+opened for you.
+
+Usage:
+
+VM 
+https://www.internalfb.com/intern/wiki/NWI/Vending_Machine/User_Guide/VM_CLI/
+
+  vm bypass job_id step_name [flags]
+
+vm bypass <job id> <step name>	skip over a step and move onto the next
+
+Flags:
+  -h, --help          help for bypass
+  -t, --task string   task number
+
+Global Flags:
+      --addr string   override controller thrft address (e.g localhost:19406)
+      --color         force colors to be on no matter what
+      --ignore-sevs   flag will prevent printing of sevs to stderr
+[ralphramos@devvm2376.frc2 ~] vm bypass 668977 ebb_validate_prod_device
+
+
+vm start pre_configure eb03.dca2 --task <xx>
+
+Command to check commit changes:
+> show system commit
+
+new one  
+odm show circuits -n bb04.dca1 | grep AM-3786362
+optical_tool topo service-summary --related-circuit AM-EBB0165
+optical_tool topo service-summary -rc AM-EBB0165
+skycli search -t DesiredRelatedCircuit -c vendor_circuit_id -c related_circuit_type -c services.a_client_port.display_name -c services.z_client_port.display_name -f vendor_circuit_id="AM-EBB0165" -F json
+
+
+Skip audits
+
+Drainer undrain:job id --skip-audit-regex netmachinechecker
+
+
+To check errors
+> show interfaces et-0/0/10 | refresh 2 | match "err.*[1-9]{1,}|Physical|Last fl|ut rate"
+---(refreshed at 2020-06-25 10:11:06 PDT)---
+Physical interface: et-0/0/10, Enabled, Physical link is Up
+  Last flapped   : 2020-06-25 09:59:08 PDT (00:11:58 ago)
+  Input rate     : 984 bps (0 pps)
+  Output rate    : 14248 bps (4 pps)
+
+
++ will be shown errors if not 0
+
+To bounce interface on Juniper
+– To Juniper disable interface:
+root@Juniper# set interfaces ge-0/0/1.0 disable  << This is cisco equivalent of “shutdown”
+
+– To Juniper enable interface:
+root@Juniper# delete interfaces ge-0/0/1.0 disable  << This is cisco equivalent of “no shutdown”
+
+
+—> No RMA is required onsite for SIBs if a restart is needed:
+- Restart needs to be done during lean hours
+- Device must be drained
+
+show chassis fabric fpcs
+show chassis fabric errors fpc 3
+show chassis fabric plane-location
+show chassis sibs
+show chassis sibs detail
+show chassis fabric topology
+show chassis fabric sibs
+
+show chassis fabric fpcs | match "FPC |PFE |SIB" | except OK
+
+
+
+> start shell pfe network fpc3
+# show ccl links
+# show ccl statistics detail
+# show ccl errors
+
+show interfaces extensive <interface-name>  // collect for all interfaces from fpc reporting error
+
+
+Tools for SH:
+Visual Fault Locator (VFL)
+
+
+ISP circuit down for IPv6:  oobsr 
+nwt13783676
+Check to see a default route is configured for IPv6 too 
+
+ralphramos@oobsr01.iad3> show configuration | display set | match static
+set policy-options community AS32934.STATIC members 65530:50200
+set routing-instances internet routing-options rib internet.inet6.0 static route ::/0 next-hop 2001:2031:0:3d::1
+set routing-instances internet routing-options static route 0.0.0.0/0 next-hop 209.95.138.253
+set routing-instances oob_mpls_vpn_telia routing-options static route 0.0.0.0/0 next-hop 10.255.8.255
+
+ralphramos@oobsr01.dub4> show configuration | display set | match static
+set policy-options community AS32934.STATIC members 65530:50200
+set routing-instances internet routing-options static route 0.0.0.0/0 next-hop 80.239.251.25
+
+
+How to ping from source node to destination node:
+
+
+Hostname > ping 2001:2030:0:7D::1 routing-instance  internet
+
+Or
+
+oobhr02.iad3> ping routing-instance internet interface xe-1/1/7.11 45.238.97.54
+> ping routing-instance internet interface <xe-$-$-$> <destination IP> 
+
+Test:
+@oobhr02.iad3> ping routing-instance internet interface xe-1/1/7.11 8.8.8.8 
+PING 8.8.8.8 (8.8.8.8): 56 data bytes
+64 bytes from 8.8.8.8: icmp_seq=0 ttl=122 time=41.830 ms
+
+
+mpiskunov@oobhr02.iad3> traceroute routing-instance internet interface xe-1/1/7.11 45.238.97.54
+traceroute to 45.238.97.54 (45.238.97.54), 30 hops max, 52 byte packets
+1  ash-b1-link.telia.net (62.115.9.76)  11.002 ms !N^C
+
+—> To determine the IP address of the target DOWN device. Check the config on the uplink (HR) to see target IP address of the DOWN device. 
+
+ralphramos@oobhr02.iad3> show configuration | display set | match oobsr01.gig1
+set services rpm probe oobsr01.gig1 test icmp probe-type icmp-ping
+set services rpm probe oobsr01.gig1 test icmp target address 45.238.97.54
+set services rpm probe oobsr01.gig1 test icmp probe-count 5
+set services rpm probe oobsr01.gig1 test icmp test-interval 60
+set services rpm probe oobsr01.gig1 test icmp routing-instance internet
+set services rpm probe oobsr01.gig1 test icmp data-size 64
+
+
+nwt13672254
+oobsr01.gig1:ge-0/0/12                     oobsr01.gig1:st0.1  oobhr02.iad3:xe-1/1/7.11                     oobhr02.iad3:st0.162                       OOBHR_OOBSR
+
+ralphramos@oobsr01.gig1> show configuration | display set | match ge-0/0/12
+set security ike gateway oobhr02sjc1-ike-gateway external-interface ge-0/0/12
+set security ike gateway oobhr02iad3-ike-gateway external-interface ge-0/0/12
+set security zones security-zone internet interfaces ge-0/0/12.0
+set interfaces ge-0/0/12 unit 0 description globenet:T=saob:U=globenet:I=FCB6060DIP
+set interfaces ge-0/0/12 unit 0 family inet address 45.238.97.54/30
