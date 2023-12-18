@@ -1,0 +1,40 @@
+GSW <-> asw role nwt16128045
+
+1. Ensure 400G XDR <-> 100G FR
+2. Speed required to be  gsw02.fml1# show running-config interfaces ethernet 1/1
+    1. interface Ethernet1/1
+    2.    description et34-1.asw01.fml1:T=us:U=facebook:B=po1
+    3.    mtu 9192
+    4.    speed 100g-2
+    5.    no switchport
+    6.    channel-group 1 mode active
+    7.    lacp timer fast
+3. asw01.fml1# show running-config interfaces ethernet 34/1
+    1. interface Ethernet34/1
+    2.    description et1-1.gsw02.fml1:T=us:U=facebook:B=po3
+    3.    mtu 9192
+    4.    speed forced 100gfull
+    5.    no switchport
+    6.    channel-group 3 mode active
+    7.    lacp timer fast
+
+
+Initially config on GSW:et1/1 was:
+ Interface Ethernet1/1
+   description et34-1.asw01.fml1:T=us:U=facebook:B=po1
+   mtu 9192
+   speed forced 100gfull
+   no switchport
+   channel-group 1 mode active
+   lacp timer fast
+
+
+It was changed to 
+Speed 100g-2 since 400G SFP links need to be configured to 100g over 2 lanes per sub interface (100G x 4 = 400G)
+
+Interface et-1 is a 400G SFP connected to a cassette which terminates to WSAi 100g-FR
+
+1/1 (100g-2) 
+1/3 (100g-2)
+1/5 (100g-2)
+1/7 (100g-2) 
