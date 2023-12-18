@@ -1,0 +1,1 @@
+mpiskunov@bb01.bos2-re0> file copy https://10.127.255.61/dl/image/juniper_junos_18.2x75-d55.2/junos-vmhost-install-ptx-x86-64-18.2X75-D55.2.tgz /var/tmp/ff/ routing-instance mgmt_junos
