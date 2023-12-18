@@ -1,0 +1,66 @@
+oobas lacp nwt16085197
+
+When enabling bundle interfaces on a juniper ex4300, ensure this line is added to enable the aggregate interface after IP address have been added 
+
+root# set chassis aggregated-devices ethernet device-count 22
+
+With aggregate interface AE1 restored, able to connect ssh directly. This will allow us to transfer the correct image file from oobsw01 -> oobas03 (new box) and allow it to be compatible with vending machine for provisioning.
+
+-> ssh to uplink oobsw01.mty2 (10.253.53.38)
+
+root> ssh 10.253.53.38
+--- JUNOS 20.3X75-D11.4 Kernel 64-bit  JNPR-11.0-20201221.5316c2e_buil
+{master:0}
+ralphramos@oobas01.mty2>
+From here able to download file and copy over to oobsw04.mty2 to upgrade from 14 -> 17 -> 18 -> 21
+
+
+-> Enter root from uplink oobas, download file from network 
+
+root> start shell user root
+root@:RE:0% sysctl net.inet.tcp.recvspace=1048576
+net.inet.tcp.recvspace: 65536 -> 1048576
+
+root@:RE:0% cd /var/tmp
+
+root@:RE:0% scp mpiskunov@10.253.53.38:/var/tmp/jinstall-host-qfx-10-f-x86-64-20.3X75-D11.4-secure-signed.tgz ./
+Password:
+jinstall-^CKilled by signal 2.20.3X75-D11.4-s  25%  381MB   1.4MB/s   13:39 ETA
+
+
+
+root@:RE:0% scp mpiskunov@10.253.53.38:/var/tmp/jinstall-ex-4300-21.2R3.8-signed.tgz ./
+Password:
+jinstall-ex-4300-21.2R3.8-signed.tgz          100%  246MB   1.4MB/s   02:58
+root@:RE:0% exit
+* 		
+P650861898
+
+
+—>copy file from uplink oobas to oobsw (new box)
+root@:RE:0% scp mpiskunov@10.253.53.38:/var/tmp/jinstall-ex-4300-18.1R2-S4.4.tgz /var/tmp/
+
+—> upgrade with new image
+root> ... add /var/tmp/jinstall-ex-4300-18.1R2-S4.4.tgz
+NOTICE: Validating configuration against jinstall-ex-4300-18.1R2-S4.4.tgz.
+NOTICE: Use the 'no-validate' option to skip this if desired.
+WARNING: A reboot is required to install the software
+WARNING:     Use the 'request system reboot' command immediately
+
+{master:0}
+root> request system reboot
+Reboot the system ? [yes,no] (no) yes
+
+
+*** System shutdown message from root@ ***
+
+System going down in 1 minute
+
+—> reboot 
+> request system software add /var/tmp/jinstall-ex-4300-18.1R2-S4.4.tgz
+
+-> 18.1 successful, now scp oobsas01.mty2 (10.253.53.38) file image 21 to new box oobsw04.mty2
+> root@:RE:0% scp mpiskunov@10.253.53.38:/var/tmp/jinstall-ex-4300-21.2R3.8-signed.tgz /var/tmp/
+
+—> exit to oobsw04.mty2, and upgrade file with newly transfer img 21.2 from oobas. 
+root@:RE:0% request system software add /var/tmp/jinstall-ex-4300-21.2R3.8-signed.tgz
