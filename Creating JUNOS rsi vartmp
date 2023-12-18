@@ -1,0 +1,55 @@
+Creating a Juniper RMA Case: (Priority 3 for replacement)
+ To open a Juniper RMA case, you'll need to upload the rsi and log files.
+
+1. First collect the RSI file and save it to /var/temp/: on the device
+    1. > request support information | save /var/tmp/rsi-bb04-iad3.txt
+											rsi_<hostname.txt>
+2. Compress the RSI file into a tgz format.
+    1. > file archive source /var/tmp/rsi_bb04-iad3.txt compress destination /var/tmp/rsi-bb04-iad3
+
+	i. To confirm file is in the directory, enter the command below:
+	> file list /var/tmp/
+	> file list detail /var/tmp
+
+3. Afterwards, you'll need to send the file from your router to your dev server:
+    1. > scp <user@devicename>:/var/tmp/<rsi-xxxx.tgz> /home/<username>
+		-This is done on your devserver.
+	i. example: 
+		scp halmahdi@bb04.iad3:/var/tmp/rsi-bb04-iad3.tgz /home/halmahdi
+
+https://supportportal.juniper.net/s/article/How-to-upload-large-files-to-a-JTAC-support-case-using-SFTP?language=en_US
+
+4. Lastly, you'll need to pull the compressed rsi file (.tgz) from your dev server to your computer. 
+    1. Use the command below to move the file from your dev server to your desktop. This will allow you to upload the file to the JTAC
+
+	> mail -a "filename" ralphramos@fb.com
+
+	i. Fill out the subject. (Subject:)
+	ii. Follow by a blank space for the description.
+	iii. Press ctrl-d to send the message. It will be confirmed with the message "EOT"
+
+
+
+Var log transfer:
+
+
+ON ROUTER:
+pr03.ams3-re0> file archive compress source /var/log/* destination /var/tmp/2019-0424-0641.tgz 
+
+ON DEV
+[ralphramos@devvm2376.frc2 ~] scp duongho@pr04.waw1:/var/tmp/2019-0424-0641.tgz /home/ralphramos/
+
+ON LOCAL TERMINAL
+ralphramos-mbp:~ ralphramos$ scp devvm2376.frc2:/home/ralphramos/2019-0424-0641.tgz  /Users/ralphramos/Desktop
+
+Or 
+
+ralphramos-mbp:~ ralphramos$ scp devvm2376.frc2:~/2019-0424-0641.tgz ./ 
+
+
+
+ To take the logs you need to issue the command: > file archive compress source /var/log/ destination /var/tmp/varlog
+
+
+
+
