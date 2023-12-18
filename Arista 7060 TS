@@ -1,0 +1,78 @@
+https://www.arista.com/en/um-eos/eos-recovery-procedures
+
+
+Aboot# reboot
+[  109.553889] SysRq : Remount R/O
+Requesting system reboot
+Restarting system
+[    1.491101] Running dosfsck on: /mnt/flash
+Aboot 6.1.7-13531819
+fsck.fat 3.0.23 (2013-10-15)
+/dev/mmcblk0p1: 147 files, 881011/931555 clusters
+Press Control-C now to enter Aboot shell
+Booting flash:/EOS-4.25.4M.swi
+[    9.012412] Starting new kernel
+[    1.133125] Running dosfsck on: /mnt/flash
+^CWelcome to Aboot.
+Aboot# cd /mnt/flash
+Aboot# ls
+AsuFastPktTransmit.log  SsuRestore.log          debug
+EOS-4.21.5.2F.swi       SsuRestoreLegacy.log    fastpkttx.backup
+EOS-4.23.0F.swi         boot-config             maint
+EOS-4.25.4M.swi         build                   persist
+FSCK0000.REC            cfg_push_1553270.conf   schedule
+FSCK0001.REC            cfg_push_1628186.conf   startup-config.old
+Fossil                  cfg_push_3473381.conf   zerotouch-config
+Aboot# mv startup-config.old startup-config
+Aboot# fullrecover
+sh: fullrecover: not found
+Aboot# cd ..
+Aboot# cd ..
+Aboot# fullrecover
+sh: fullrecover: not found
+Aboot# fullrecover
+sh: fullrecover: not found
+Aboot# exit
+Requesting system reboot
+[  209.371126] reboot: Restarting system
+[    1.495709] Running dosfsck on: /mnt/flash
+Aboot 6.1.7-13531819
+fsck.fat 3.0.23 (2013-10-15)
+0x41: Dirty bit is set. Fs was not properly unmounted and some data may be corrupt.
+ Automatically removing dirty bit.
+Performing changes.
+/dev/mmcblk0p1: 147 files, 881011/931555 clusters
+Press Control-C now to enter Aboot shell
+Booting flash:/EOS-4.25.4M.swi
+[    9.028501] Starting new kernel
+[    1.137937] Running dosfsck on: /mnt/flash
+[    1.491279] Running dosfsck on: /mnt/flash
+Aboot 6.1.7-13531819
+fsck.fat 3.0.23 (2013-10-15)
+0x41: Dirty bit is set. Fs was not properly unmounted and some data may be corrupt.
+ Automatically removing dirty bit.
+Performing changes.
+/dev/mmcblk0p1: 147 files, 881011/931555 clusters
+Press Control-C now to enter Aboot shell
+Booting flash:/EOS-4.25.4M.swi
+[    9.028504] Starting new kernel
+[    1.137255] Running dosfsck on: /mnt/flash
+Switching rootfs
+starting version 219
+Welcome to Arista Networks EOS 4.25.4M
+New seat seat0.
+Starting ProcMgr: Removing all files in all subdirs of /etc/ProcMgr.d/run
+[  OK  ]
+Starting EOS initialization stage 1: [  OK  ]
+Starting NorCal initialization: [  OK  ]
+Starting EOS initialization stage 2: [  OK  ]
+Completing EOS initialization (press ESC to skip): [  OK  ]
+Model: DCS-7060CX-32S
+Serial Number: SGD20123586
+System RAM: 8099060 kB
+Flash Memory size:  3.6G
+msw1ad login: halmahdi
+Password:
+msw1ad.01.akl1> show interfaces status
+Port       Name                                    Status       Vlan     Duplex Speed  Type           Flags Encapsulation
+Et1/1      SERVERS facebook:T=oc:U=facebook        notconnect   301      full   40G    Not Present
