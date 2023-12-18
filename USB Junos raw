@@ -1,0 +1,88 @@
+nwt14050104 / T80941203 pr03.sin1 Full Chassis Replacement
+
+MOP:
+https://docs.google.com/document/d/1n3ENq3vHZm3HbLnkOgkbtlqp1v0HPf1FYiKkAKVp6gk/edit#
+
+1. Drain device
+2. Notify Network Feed / Peers 
+3. Netstate 
+4. Verify Metroid Traffic
+5. Note console information and stay logged in via console
+6. ‘Request system zerorize’ device to erase configuration 
+7. Have techs rack and replace chassis
+8. Verify firmware 17.2R1-S3.7
+9. If below, provide the dropbox link for the tech to download and create a bootable USB (FAT32 16/32gb) via Rufus (app) Partition style MBR
+10. Once USB has firmware upgrade file copied, plug in to USB.
+    1. Steps to copy firmware upgrade from bootable USB to /var/tmp/
+    2. 
+    3. 1. Enter shell
+    4. root> start shell user root
+    5. 
+    6. 2. Verify USB connected
+    7. root@:~ # ls /dev/da*
+    8. > /dev/da0        /dev/da0s1
+    9. 
+    10. ---> Removed USB
+    11. 
+    12. root@:~ # ugen0.3: <SanDisk> at usbus0 (disconnected)
+    13. umass0: at uhub1, port 2, addr 3 (disconnected)
+    14. da0 at umass-sim0 bus 0 scbus3 target 0 lun 0
+    15. da0: <SanDisk Ultra 1.00> s/n 4C531001511230116095 detached
+    16. (da0:umass-sim0:0:0:0): Periph destroyed
+    17. 
+    18. root@:~ # ls /dev/da*
+    19. > ls: No match.
+    20. 
+    21. 
+    22. ---> USB plugged back in
+    23. 
+    24. root@:~ # ugen0.3: <SanDisk> at usbus0
+    25. umass0: <SanDisk Ultra, class 0/0, rev 2.10/1.00, addr 3> on usbus0
+    26. da0 at umass-sim0 bus 0 scbus3 target 0 lun 0
+    27. da0: <SanDisk Ultra 1.00> Removable Direct Access SPC-4 SCSI device
+    28. da0: Serial Number 4C531001511230116095
+    29. da0: 40.000MB/s transfers
+    30. da0: 14875MB (30464000 512 byte sectors)
+    31. da0: quirks=0x2<NO_6_BYTE>
+    32. 
+    33. 
+    34. ls /dev/da*
+    35. > /dev/da0        /dev/da0s1
+    36. 
+    37. 3. Make a directory to mount USB
+    38. root@:~ # mkdir /var/tmp/usb
+    39. 
+    40. root@:~ # ls /dev/da*
+    41. > /dev/da0        /dev/da0s1
+    42. 
+    43. 4. Mount USB
+    44. root@:~ # mount_msdosfs /dev/da0s1 /var/tmp/usb
+    45. root@:~ # ls /var/tmp/usb
+    46. > junos-vmhost-install-ptx-x86-64-17.2R1-S6.3.tgz
+    47. 
+    48. 5. Copy image (.tgz) from usb to /var/tmp
+    49. root@:~ # cp /var/tmp/usb/junos-vmhost-install-ptx-x86-64-17.2R1-S6.3.tgz /var/tmp
+    50. 
+    51. root@:~ # ls /var/tmp
+    52. > junos-vmhost-install-ptx-x86-64-17.2R1-S6.3.tgz
+    53. 
+    54. 6. Upgrade RE0 and RE1 using firmware file from /var/tmp/
+    55. root@:/var/tmp # cli
+    56. root> request vmhost software add re<0|1> junos-vmhost-install-ptx-x86-64-17.2R1-S6.3.tgz no-validate reboot
+    57. 
+    58. ---> After upgrade, you should see this. 
+    59. 
+    60. FreeBSD/amd64 (Amnesiac) (ttyu0)
+    61. 
+    62. login: root
+    63. Last login: Fri Dec 18 21:03:35 on ttyu0
+    64. 
+    65. --- JUNOS 17.2R1-S6.3 Kernel 64-bit  JNPR-10.3-20180501.0ba59cf_buil
+
+11. After firmware upgraded on both RE0 and RE1, we need to enable ZTP on the device
+    1. “Request vmhost zeroize” 
+12. Update SERF status from “in use” to “provisioning”
+13. Update SERF for Chassis, RE0 and RE1
+14. Run ‘vm configure <device-name> —task
+15. Monitor and create a vm rage is needed for NIE to check
+
