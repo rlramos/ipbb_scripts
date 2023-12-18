@@ -359,3 +359,12 @@ set security ike gateway oobhr02iad3-ike-gateway external-interface ge-0/0/12
 set security zones security-zone internet interfaces ge-0/0/12.0
 set interfaces ge-0/0/12 unit 0 description globenet:T=saob:U=globenet:I=FCB6060DIP
 set interfaces ge-0/0/12 unit 0 family inet address 45.238.97.54/30
+
+
+ralphramos@oobas01.jnb1> file checksum md5 ?
+Possible completions:
+  <path>               Path to filename
+  h lacp int ae21      Size: 1573, Last changed: Jun 23 2020
+{master:0}
+ralphramos@oobas01.jnb1> file checksum md5 /var/tmp/jinstall-host-qfx-10-f-x86-64-20.3X75-D11.4-secure-signed.tgz
+MD5 (/var/tmp/jinstall-host-qfx-10-f-x86-64-20.3X75-D11.4-secure-signed.tgz) = 189af1d16b2a95a69d1075e982dccd31
