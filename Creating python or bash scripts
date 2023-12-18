@@ -1,0 +1,38 @@
+How to create a python script on your deserver:
+
+1. Type “ vi .<script-name> “
+2. Type “#!/usr/bin/env python3” on top of list for python
+3. Type code in vi 
+4.  An alternative to copy past python code is to use “cat > <script-name.py>” to avoid indentation issues
+5. :wq! # to write and quit script
+6.  Chmod +x <script-name> # creates an executable 
+7.  ./<script-name> # to run file 
+
+
+Ls - l 
+-rwxr-xr-x. 1 ralphramos users 331 Mar  4 10:42 test_1.py
+
+   1. Type “cat <script-name>”  # see code
+   2. Type “vi .<script-name> # enter VI editor
+      - Type “I” to edit line 
+
+
+./source <script-name> # run file
+
+
+
+~/fbsource/fbcode/experimental/ralphramos
+
+
+How to create a bash script on your deserver
+
+0. ctrl+c -> :wq! (To quit)
+0. Type s to insert text
+0. Hjkl (left, up, down right)
+
+1. Type “vi <script-name>”
+    1. You can change your name to
+2. Type code into text editor (Vim/nano)
+3. Move file to bin folder “mv <script-name> bin/ 
+    1. Create a bin folder if you don’t have one “mkdir bin”
+4. Make your file an executable. “Chmod +x <script-name>”
