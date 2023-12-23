@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+# IPBB router tool. Check/clear counter errors, port uptime, etc.
+# Oct-06-2023
+from subprocess import run, PIPE, CalledProcessError
+import sys
+import os
+import getpass
+import argparse
+pass_file = "/tmp/.tmp.MnRvT5N97B.cat"
+ipbb_ascii = """
+██╗██████╗ ██████╗ ██████╗
+██║██╔══██╗██╔══██╗██╔══██╗
+██║██████╔╝██████╔╝██████╔╝
+██║██╔═══╝ ██╔══██╗██╔══██╗
+██║██║     ██████╔╝██████╔╝
+╚═╝╚═╝     ╚═════╝ ╚═════╝
+"""
+colors = {
+    "RED": '\x1B[' + '31;1m', "YELLOW": '\x1B[' + '33;1m',
+    "PURPLE": '\x1B[' + '35;1m', "CYAN": '\x1B[' + '36;1m',
+    "GREEN": '\x1B[' + '33;32m', "END": '\x1B[' + '0m',
+    }
+def router_mfg(devname) -> tuple:
+    rahi_systems = ("oobsc", "dcn") #Not supported yet
+    juniper_routers = ("bb", "ar", "pr", "dr", "oobsw", "oobas")
+    arista_routers = ("eb")
+    dev_manufacturer = "juniper" if devname.startswith(juniper_routers) else "arista"
+    router_port = ':'.join(devname.split(':')[1:]) #Catch regular and MPO ports
+    #router_port = devname.split(":")[-1]
+    if dev_manufacturer == "juniper":
+        return (f" \"show interfaces {router_port}\"", dev_manufacturer)
+    elif dev_manufacturer == "arista":
+        return (f" \"run show interfaces {router_port}\"", dev_manufacturer)
+def router_login(devname) -> None:
+    try:
+        run(
+            f"sshpass -p '{get_password()}' ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no "
+            f"-l {getpass.getuser()} {devname}", shell=True
+        )
+        sys.exit(0)
+    except FileNotFoundError:
+        print("%sRouter is not reachable or you entered a wrong password!%s" % (colors.get('RED'), colors.get('END')))
+        run(f"rm -f {pass_file}", shell=True)
+        sys.exit(1)
+def get_password() -> str:
+    if os.path.exists(pass_file) and os.path.getsize(pass_file) > 0:
+        with open(pass_file, "r") as file:
+            return file.read().strip()
+    else:
+        print(f"{ipbb_ascii}")
+        print("%sNOTE: %s" % (colors.get('GREEN'), colors.get('END')), end='')
+        print("%sPassword will be removed once your ondemand session expires!%s" % (colors.get('RED'), colors.get('END')))
+        password = getpass.getpass("Enter password: ")
+        with open(pass_file, "w") as file:
+            file.write(password)
+        return password
+def run_ssh_command(command, host_port) -> str:
+    host = host_port.split(':')[0]
+    ssh_command = (
+            f"sshpass -p '{get_password()}' ssh -o IdentitiesOnly=yes "
+            f"-o StrictHostKeyChecking=no -o ConnectTimeout=20 -l {getpass.getuser()} {host} {command}"
+        )
+    try:
+        if command:
+            run_output = run(ssh_command, shell=True, stdout=PIPE, check=True, encoding="utf-8").stdout.strip()
+            if run_output:
+                return run_output
+        else:
+            ssh_command
+    except CalledProcessError:
+        print("%sRouter is not reachable or you entered a wrong password!%s" % (colors.get('RED'), colors.get('END')))
+        run(f"rm -f {pass_file}", shell=True)
+        sys.exit(1)
+def clear_port_counters(devname) -> None:
+    host = devname.split(':')[0]
+    port, router_make = router_mfg(devname)
+    port = port.split()[3].title().rstrip('"') if router_make == "arista" else port.split()[2].rstrip('"')
+    clear_counters = (
+        f"sshpass -p {get_password()} ssh -o StrictHostKeyChecking=no "
+        f"-l {getpass.getuser()} {host} "
+    )
+    if router_make == "juniper":
+        clear_counters += f" \"clear interfaces statistics {port}\""
+    elif router_make == "arista":
+        clear_counters += f" \"clear counters {port}\""
+    run(clear_counters, shell=True)
+def main(host_port, clear_counters=False) -> None:
+    if ":" not in host_port: router_login(host_port)
+    if clear_counters:
+        clear_port_counters(host_port)
+        sys.exit(0)
+    reouter_cmds, maker = router_mfg(host_port)
+    output = run_ssh_command(reouter_cmds, host_port)
+    meta_router = Meta_Routers(output, host_port)
+    meta_router.juniper_routers() if maker == "juniper" else meta_router.arista_routers()
+class Meta_Routers:
+    def __init__(self, router_cmd_output, devname) -> None:
+        self.router_cmd_output = router_cmd_output
+        self.devname = devname
+    def juniper_routers(self): #Juniper - BB / AR / PR / DR
+        print(f"\n%s [JUNIPER - {self.devname}] %s" % (colors.get('YELLOW'), colors.get('END')))
+        for line in self.router_cmd_output.split('\n'):
+            if any(
+                keyword in line for keyword in
+                ['flapped', 'Physical', 'error', 'Error', 'Description', 'packets']
+                ):
+                if "Link-level" not in line:
+                    print(line.lstrip())
+    def arista_routers(self): #Arista - EB
+        print(f"\n%s [ARISTA - {self.devname}]%s" % (colors.get('PURPLE'), colors.get('END')))
+        for line in self.router_cmd_output.split('\n'):
+            if any(
+                keyword in line for keyword in
+                ['Description', 'Up', 'day', 'Down', 'protocol', 'errors', 'overhead']
+                ):
+                print(line.strip())
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("host_port", nargs='?', help="eb02.atl4:Ethernet5/7/1 or bb03.pnq1:et-0/0/58 --clearcrc y|yes ")
+    parser.add_argument("host_login", action="store_true", help="oobsw10.ams6, eb02.atl4, bb03.pnq1, rva1-ts098, pr04.mad1")
+    parser.add_argument("--clearcrc", choices=["y", "yes"], help="Reset counter errors in the port")
+    args = parser.parse_args()
+    if not args.host_port or not args.host_login:
+        parser.print_help()
+        sys.exit(1)
+    args.clearcrc = True if args.clearcrc in ['y','yes'] else False
+    if args.host_port and args.clearcrc:
+        main(sys.argv[1].lower(),clear_counters=True)
+    elif args.host_port:
+        main(sys.argv[1].lower(),clear_counters=False)
